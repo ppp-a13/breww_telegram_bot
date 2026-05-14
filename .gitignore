@@ -5,3 +5,7 @@ __pycache__/
 *.pyo
 breww_shop.db
 *.db
+.idea/
+.DS_Store
+data/
+seed.py

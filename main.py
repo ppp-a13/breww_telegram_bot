@@ -10,12 +10,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv('BOT_TOKEN')
-ADMIN_IDS = list(map(int, os.getenv('ADMIN_IDS', '').split(',')))
-
-
-async def init_models(engine):
-    async with engine.begin() as conn:
-        await conn.run_sync(BaseModel.metadata.create_all)
 
 
 async def main():
@@ -31,7 +25,6 @@ async def main():
     register_middlewares(dp, session_maker)
     register_routes(dp)
 
-    await init_models(engine)
     await dp.start_polling(bot)
 
 
