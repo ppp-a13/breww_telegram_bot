@@ -28,11 +28,11 @@
 3. Создать `.env` на основе `.env.example` и заполнить:
 BOT_TOKEN=token_from_@BotFather
 ADMIN_IDS=your_telegram_id (допускается несколько значений через запятую)
-5. Применить миграции:
+4. Применить миграции:
 ```bash
    alembic upgrade head
 ```
-7. Запустить бота:
+5. Запустить бота:
 ```bash
    python main.py
 ```
