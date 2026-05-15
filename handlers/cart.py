@@ -1,19 +1,19 @@
 from aiogram import F, Router, types
-from aiogram.utils import keyboard
 
+from keyboards.catalog import CartCallBackData
 from repositories.cart import CartRepository
 from repositories.teas import TeaRepository
 from repositories.user import UserRepository
-from keyboards.catalog import CartCallBackData
 
 router = Router()
+
 
 @router.message(F.text == 'Корзина')
 async def show_cart(message: types.Message, cart_repository: CartRepository, tea_repository: TeaRepository):
     items = list(await cart_repository.get_cart(message.from_user.id))
 
     if not items:
-        await message.answer('Ваша корзина пуста')
+        await message.answer('Корзина скучает, в ней нет товаров')
         return
 
     text = 'Ваша корзина:\n\n'
@@ -23,14 +23,14 @@ async def show_cart(message: types.Message, cart_repository: CartRepository, tea
         tea = await tea_repository.get_tea_by_id(item.tea_id)
         item_total = tea.price * item.quantity
         total += item_total
-        text += f'@ {tea.name} * {item.quantity} = {round(item_total / 100, 2)} монеток\n'
+        text += f'•︎ {tea.name} * {item.quantity} = {round(item_total / 100, 2)} рублей\n'
 
-    text += f'\nИтого: {round(total / 100, 2)} монеток'
+    text += f'\nИтого: {round(total / 100, 2)} рублей'
 
     from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text='Оформить заказ', callback_data='checkout')],
-        [InlineKeyboardButton(text='Очистить корзину', callback_data='clear_cart')]
+        [InlineKeyboardButton(text='Оформить заказ', callback_data='checkout'),
+         InlineKeyboardButton(text='Очистить корзину', callback_data='clear_cart')]
     ])
 
     await message.answer(text, reply_markup=keyboard)
@@ -45,7 +45,8 @@ async def add_to_cart(
 ):
     tea = await tea_repository.get_tea_by_id(callback_data.tea_id)
     await cart_repository.add_item(callback.from_user.id, callback_data.tea_id)
-    await callback.answer(f'"{tea.name}" добавлен в корзину!',show_alert=False)
+    await callback.answer(f'«{tea.name}» добавлен в корзину', show_alert=False)
+
 
 @router.callback_query(F.data == 'clear_cart')
 async def clear_cart(
@@ -80,7 +81,7 @@ async def checkout(
 
     if user.balance < total:
         await callback.answer(
-            f'Недостаточно средств. Нужно {round(total / 100, 2)}, у Вас {user.view_balance}.',
+            f'Увы, недостаточно средств\nНеобходимо {round(total / 100, 2)}, у Вас {user.view_balance}',
             show_alert=True
         )
         return
@@ -93,5 +94,5 @@ async def checkout(
     await user_repository.update_balance(callback.from_user.id, -total)
     await cart_repository.clear_cart(callback.from_user.id)
 
-    await callback.message.edit_text('Заказ оформлен!')
+    await callback.message.edit_text('Ваш заказ успешно оформлен!')
     await callback.answer()

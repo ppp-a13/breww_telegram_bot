@@ -1,6 +1,7 @@
 from sqlalchemy import select
-from database.models.tea import Tea
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from database.models.tea import Tea
 
 
 class TeaRepository:
@@ -44,3 +45,8 @@ class TeaRepository:
         tea = await self.__session.scalar(statement)
         await self.__session.delete(tea)
         await self.__session.commit()
+
+    async def get_all_teas_by_category(self, category_id: int):
+        statement = select(Tea).where(Tea.category_id == category_id).order_by(Tea.name)
+        result = await self.__session.scalars(statement)
+        return result.all()

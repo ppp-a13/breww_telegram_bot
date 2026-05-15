@@ -1,12 +1,12 @@
 import asyncio
-from aiogram import Bot, Dispatcher, Router, types
-from handlers import register_routes
-from database.models import BaseModel
-from middlewares import register_middlewares
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 import os
-from dotenv import load_dotenv
 
+from aiogram import Bot, Dispatcher
+from dotenv import load_dotenv
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+
+from handlers import register_routes
+from middlewares import register_middlewares
 
 load_dotenv()
 TOKEN = os.getenv('BOT_TOKEN')
@@ -17,10 +17,9 @@ async def main():
     dp = Dispatcher()
 
     engine = create_async_engine(
-        url = 'sqlite+aiosqlite:///breww_shop.db'
+        url='sqlite+aiosqlite:///breww_shop.db'
     )
     session_maker = async_sessionmaker(engine, expire_on_commit=False)
-
 
     register_middlewares(dp, session_maker)
     register_routes(dp)

@@ -1,6 +1,8 @@
-from database.models import BaseModel
-from sqlalchemy.orm import mapped_column, Mapped
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import mapped_column, Mapped
+
+from database.models import BaseModel
+
 
 class CartItem(BaseModel):
     __tablename__ = 'cart_items'

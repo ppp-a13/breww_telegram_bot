@@ -6,6 +6,7 @@ from repositories.user import UserRepository
 
 router = Router()
 
+
 @router.message(Command('start'))
 async def start_bot(message: types.Message, user_repository: UserRepository):
     await user_repository.create_or_update_user(
@@ -14,6 +15,7 @@ async def start_bot(message: types.Message, user_repository: UserRepository):
         message.from_user.username
     )
     await message.answer(
-        f'Привет, {message.from_user.full_name}!\nЯ магазин чая, выбери нужное меню снизу:',
-        reply_markup=main_menu_keyboard()
+        f'Привет, {message.from_user.full_name} 👋\n\nДобро пожаловать в <b>BREWW</b> — магазин чая для тех, кто ценит удовольствие',
+        reply_markup=main_menu_keyboard(),
+        parse_mode='html'
     )

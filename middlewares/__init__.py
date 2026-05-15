@@ -1,6 +1,5 @@
 from aiogram import Dispatcher
 
-
 from middlewares.session import DatabaseSessionMiddleware
 
 

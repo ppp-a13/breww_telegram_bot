@@ -1,6 +1,8 @@
 from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from database.models.cart import CartItem
+
 
 class CartRepository:
     def __init__(self, session: AsyncSession):

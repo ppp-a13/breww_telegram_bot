@@ -1,5 +1,6 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+
 def profile_menu():
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(
@@ -8,6 +9,7 @@ def profile_menu():
         ),
         ]
     ])
+
 
 def break_action_and_back_to_main_menu(text: str = 'Отменить'):
     return InlineKeyboardMarkup(inline_keyboard=[

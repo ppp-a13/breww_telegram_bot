@@ -27,7 +27,8 @@ class FilterUserCanBuyTea(Filter):
             return False
 
         if user.balance < tea.price:
-            await callback.answer('Недостаточно монет!', show_alert=True)
+            await callback.answer('Ваш баланс оказался не таким большим\nРекомендуем его пополнить!',
+                                  show_alert=True)
             return False
 
         return True

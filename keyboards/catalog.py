@@ -1,5 +1,5 @@
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.filters.callback_data import CallbackData
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
 class CategoryCallBackData(CallbackData, prefix='category'):
@@ -9,18 +9,23 @@ class CategoryCallBackData(CallbackData, prefix='category'):
 class TeasCallBackData(CallbackData, prefix='tea'):
     id: int
 
+
 class BuyTeaCallBackData(CallbackData, prefix='buy_tea'):
     id: int
+
 
 class CartCallBackData(CallbackData, prefix='cart'):
     tea_id: int
     action: str
 
+
 class TeaPageCallBackData(CallbackData, prefix='tea_page'):
     category_id: int
     page: int
 
+
 TEA_PER_PAGE = 5
+
 
 def generate_catalog_keyboard(categories):
     keyboard = InlineKeyboardMarkup(inline_keyboard=[])
@@ -36,6 +41,7 @@ def generate_catalog_keyboard(categories):
         )
 
     return keyboard
+
 
 def generate_teas_callback(teas, category_id: int, page: int = 0):
     keyboard = InlineKeyboardMarkup(inline_keyboard=[])
@@ -57,12 +63,12 @@ def generate_teas_callback(teas, category_id: int, page: int = 0):
     navigation_buttons = []
     if page > 0:
         navigation_buttons.append(InlineKeyboardButton(
-            text='<-',
+            text='⬅️',
             callback_data=TeaPageCallBackData(category_id=category_id, page=page - 1).pack()
         ))
     if end < len(teas):
         navigation_buttons.append(InlineKeyboardButton(
-            text='>>',
+            text='➡️',
             callback_data=TeaPageCallBackData(category_id=category_id, page=page + 1).pack()
         ))
     if navigation_buttons:
@@ -70,25 +76,24 @@ def generate_teas_callback(teas, category_id: int, page: int = 0):
 
     keyboard.inline_keyboard.append(
         [
-            InlineKeyboardButton(text='<< Назад', callback_data='catalog')
+            InlineKeyboardButton(text='Назад в каталог', callback_data='catalog')
         ]
     )
 
     return keyboard
+
 
 def back_to_category_teas(tea_id, category_id):
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
+                    text='Назад',
+                    callback_data=CategoryCallBackData(category_id=category_id).pack()
+                ),
+                InlineKeyboardButton(
                     text='В корзину',
                     callback_data=CartCallBackData(tea_id=tea_id, action='add').pack()
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    text='<< Назад',
-                    callback_data=CategoryCallBackData(category_id=category_id).pack()
                 )
             ]
         ]

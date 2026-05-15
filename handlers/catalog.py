@@ -1,12 +1,15 @@
+import os
+
 from aiogram import F, Router, types
+from aiogram.types import FSInputFile
 
 from filters.check_buy_item import FilterUserCanBuyTea
+from keyboards.catalog import TeaPageCallBackData
 from keyboards.catalog import generate_catalog_keyboard, CategoryCallBackData, generate_teas_callback, TeasCallBackData, \
     back_to_category_teas, BuyTeaCallBackData
 from repositories.categories import CategoryRepository
 from repositories.teas import TeaRepository
 from repositories.user import UserRepository
-from keyboards.catalog import TeaPageCallBackData
 
 router = Router()
 
@@ -53,6 +56,7 @@ async def category_info(
 
     await callback.answer()
 
+
 @router.callback_query(TeasCallBackData.filter())
 async def teas_info(callback: types.CallbackQuery, callback_data: TeasCallBackData, tea_repository: TeaRepository):
     tea = await tea_repository.get_tea_by_id(callback_data.id)
@@ -60,26 +64,26 @@ async def teas_info(callback: types.CallbackQuery, callback_data: TeasCallBackDa
     text = (
         f'<b>{tea.name}</b>\n\n'
         f'{tea.description}\n\n'
-        f'Стоимость {round(tea.price / 100, 2)} монеток'
+        f'Стоимость: {round(tea.price / 100, 2)} рублей'
     )
     keyboard = back_to_category_teas(tea.id, tea.category_id)
 
-    if tea.photo_id:
+    photo_path = f'data/photos/{tea.id}.jpg'
+
+    if os.path.exists(photo_path):
+        photo = FSInputFile(photo_path)
         await callback.message.delete()
         await callback.message.answer_photo(
-            photo=tea.photo_id,
+            photo=photo,
             caption=text,
             parse_mode='html',
             reply_markup=keyboard
         )
     else:
-        await callback.message.edit_text(
-            text,
-            parse_mode='html',
-            reply_markup=keyboard
-        )
+        await callback.message.edit_text(text, parse_mode='html', reply_markup=keyboard)
 
     await callback.answer()
+
 
 @router.callback_query(FilterUserCanBuyTea(), BuyTeaCallBackData.filter())
 async def buy_tea_action(
@@ -92,9 +96,10 @@ async def buy_tea_action(
     await user_repository.update_balance(callback.from_user.id, -tea.price)
 
     await callback.message.answer(
-        f'Вы успешно купили {tea.name}!'
+        f'Вы успешно купили {tea.name}'
     )
     await callback.answer()
+
 
 @router.callback_query(TeaPageCallBackData.filter())
 async def tea_page(
@@ -104,7 +109,7 @@ async def tea_page(
         tea_repository: TeaRepository
 ):
     category = await category_repository.get_by_id(callback_data.category_id)
-    teas =  await tea_repository.get_teas_by_category_id(callback_data.category_id)
+    teas = await tea_repository.get_teas_by_category_id(callback_data.category_id)
     keyboard = generate_teas_callback(teas, callback_data.category_id, callback_data.page)
 
     await callback.message.edit_text(text=category.description, reply_markup=keyboard)

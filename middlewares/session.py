@@ -3,10 +3,10 @@ from typing import Callable, Dict, Any, Awaitable
 from aiogram import BaseMiddleware
 from aiogram.types import Message
 
+from repositories.cart import CartRepository
 from repositories.categories import CategoryRepository
 from repositories.teas import TeaRepository
 from repositories.user import UserRepository
-from repositories.cart import CartRepository
 
 
 class DatabaseSessionMiddleware(BaseMiddleware):

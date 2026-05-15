@@ -1,6 +1,8 @@
-from database.models import BaseModel
-from sqlalchemy.orm import mapped_column, Mapped
 from sqlalchemy import BigInteger
+from sqlalchemy.orm import mapped_column, Mapped
+
+from database.models import BaseModel
+
 
 class User(BaseModel):
     __tablename__ = 'users'

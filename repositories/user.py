@@ -1,7 +1,9 @@
 from sqlalchemy import select
-from database.models.user import User
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import update
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from database.models.user import User
+
 
 class UserRepository:
     def __init__(self, session: AsyncSession):

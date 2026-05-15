@@ -1,6 +1,7 @@
-from database.models import BaseModel
 from sqlalchemy.orm import mapped_column, Mapped
-from sqlalchemy import BigInteger
+
+from database.models import BaseModel
+
 
 class Category(BaseModel):
     __tablename__ = 'categories'
