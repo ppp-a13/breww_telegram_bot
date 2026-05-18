@@ -10,14 +10,20 @@ from middlewares import register_middlewares
 
 load_dotenv()
 TOKEN = os.getenv('BOT_TOKEN')
+URL = os.getenv('DB_URL')
 
+if not TOKEN:
+    raise ValueError('BOT_TOKEN не установлен в .env файле')
+
+if not URL:
+    raise ValueError('DB_URL не установлен в .env файле')
 
 async def main():
     bot = Bot(token=TOKEN)
     dp = Dispatcher()
 
     engine = create_async_engine(
-        url='sqlite+aiosqlite:///breww_shop.db'
+        url=URL
     )
     session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
